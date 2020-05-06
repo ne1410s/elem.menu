@@ -1,9 +1,9 @@
 import { CustomElementBase } from '@ne1410s/cust-elems';
 
-import markupUrl from './demo-tooltip.html';
-import stylesUrl from './demo-tooltip.css';
+import markupUrl from './menu.html';
+import stylesUrl from './menu.css';
 
-export class DemoTooltip extends CustomElementBase {
+export class ContextMenu extends CustomElementBase {
 
   public static readonly observedAttributes = ['corner', 'reveal'];
 

@@ -1,25 +1,26 @@
 # @ne1410s/demo
-## A custom element for demonstration purposes and to serve as a project template.
+## A custom element implementation of a context menu.
 ```html
-<ne14-demo-tooltip reveal="Hey!">
-  <p>Hello world</p>
-</ne14-demo-tooltip>
+<ne14-menu mode="dark">
+  <li>Hello world</li>
+</ne14-menu>
 ```
 - **Use:** `<script src="PATH_TO_UMD_SCRIPT"></script>`
-- **Extend:** *npm i -S @ne1410s/demo*
+- **Extend:** *npm i -S @ne1410s/menu*
 ### Attributes
 ```html
-<ne14-demo-tooltip corner="3" reveal="Definition here">YO' STUFF<ne14-demo-tooltip>
+<ne14-menu>
+  <li>YO' STUFF 1</li>
+  <li>YO' STUFF 2</li>
+</ne14-menu>
 ```
-- **corner**: If specified, the reveal text is positioned in a corner of the screen:
-  - 1: Top-left, 2: Top-right, 3: Bottom-right, 4: Bottom-left
-- **reveal**: The definition text that gets shown on hover
+- **mode**: Optional theme.
 
 ### Events
 ```javascript
-const tooltip = document.querySelector('ne14-demo-tooltip');
+const menu = document.querySelector('ne14-menu');
 
-tooltip.addEventListener('...', () => {
+menu.addEventListener('...', () => {
   console.log('Event fired!');
 });
 ```
@@ -27,5 +28,4 @@ tooltip.addEventListener('...', () => {
 ### Methods
 - *There are no bespoke methods exposed in this element*
 ### Properties
-- `set` **corner** (number): Sets the attribute with the corresponding value
-- `set` **reveal** (string): Sets the attribute with the corresponding value
+- `set` **mode** (number): Sets the attribute with the corresponding value
