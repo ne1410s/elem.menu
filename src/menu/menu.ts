@@ -5,40 +5,46 @@ import stylesUrl from './menu.css';
 
 export class ContextMenu extends CustomElementBase {
 
-  public static readonly observedAttributes = ['corner', 'reveal'];
+  public static readonly observedAttributes = ['mode'];
 
   constructor() {
     super(stylesUrl, markupUrl);
   }
 
-  set reveal(value: string) {
-    this.setAttribute('reveal', value);
-  }
-
-  set corner(value: number) {
-    this.setAttribute('corner', value + '');
+  set mode(value: string) {
+    this.setAttribute('mode', value);
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     switch (name) {
-      case 'corner':
-        const target = this.root.querySelector('.reveal');
-        const corner = '1234'.split('').indexOf(newValue) === -1 ? '' : newValue;
-        if (corner) target.setAttribute('data-corner', corner + '');
-        else target.removeAttribute('data-corner');
-        break;
-      case 'reveal':
-        const slot = this.root.querySelector('slot[name=reveal]');
-        slot.textContent = newValue;
+      case 'mode':
+        // ...
         break;
     }
   }
 
   connectedCallback() {
-    // on connected to dom
+
+    // Prevent self-initiated clicks from necessarily closing
+    this.addEventListener('click', event => event.stopPropagation())
+
+    // Any other clicks result in close
+    window.addEventListener('click', () => this.close());
+
+    // Right-clicks (in parent) result in open
+    this.parentNode.addEventListener('contextmenu', event => {
+      if (this.parentNode) {
+        event.preventDefault();
+        this.open();
+      }
+    });
   }
 
-  disconnectedCallback() {
-    // on disconnected from dom
+  open() {
+    console.log('open me!');
+  }
+
+  close() {
+    console.log('shut me!');
   }
 }

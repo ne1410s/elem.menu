@@ -3,12 +3,39 @@
 <head>
   <title>Test</title>
   <script src="../dist/ne14_menu.umd.min.js"></script>
+  <script>(function() {
+  
+    const redMenu = document.createElement('ne14-menu');
+
+    window.addEventListener('load', function() {
+      document
+        .querySelector('.red.box')
+        .appendChild(redMenu);
+    });
+
+  })();</script>
+  <style>
+    html { font: 20px Calibri; }
+    .box { margin: 2em; padding: 1em; text-align: center;}
+    .red { background-color: red; }
+    .yellow { background-color: yellow; }
+    .green { background-color: green; }
+  </style>
 </head>
 <body>
-  <h1>Lorem Ipsum</h1>
-  <ne14-menu>
-    <li>Item 1</li>
-    <li>Item 2</li>
-  </ne14-menu>
+
+  <div class="red box">
+    <p>Added programatically</p>
+  </div>
+
+  <div class="yellow box">
+    <p>Normal (no special menu)</p>
+  </div>
+
+  <div class="green box">
+    <p>Present in initial markup</p>
+    <ne14-menu></ne14-menu>
+  </div>
+
 </body>
 </html>
