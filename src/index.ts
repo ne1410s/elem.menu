@@ -1,7 +1,7 @@
-import { ContextMenu } from './menu/menu';
+import { NeMenu } from './menu/menu';
 
 if ('customElements' in window) {
-  window.customElements.define('ne14-menu', ContextMenu);
+  window.customElements.define('ne14-menu', NeMenu);
 }
 
-export { ContextMenu };
+export { NeMenu as ContextMenu };

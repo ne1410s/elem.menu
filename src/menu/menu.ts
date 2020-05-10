@@ -3,48 +3,68 @@ import { CustomElementBase } from '@ne1410s/cust-elems';
 import markupUrl from './menu.html';
 import stylesUrl from './menu.css';
 
-export class ContextMenu extends CustomElementBase {
+export class NeMenu extends CustomElementBase {
 
-  public static readonly observedAttributes = ['mode'];
+  public static readonly observedAttributes = ['mode', 'open'];
+
+  private readonly top: HTMLUListElement;
 
   constructor() {
     super(stylesUrl, markupUrl);
+
+    this.top = this.root.querySelector('ul');
   }
 
+  get mode(): string { return this.getAttribute('mode'); }
   set mode(value: string) {
-    this.setAttribute('mode', value);
+    if (value) this.setAttribute('mode', value);
+    else this.removeAttribute('mode');
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     switch (name) {
+
       case 'mode':
         // ...
+        break;
+
+      case 'open':
+        this.top.classList.add('open');
         break;
     }
   }
 
   connectedCallback() {
 
-    // Prevent self-initiated clicks from necessarily closing
-    this.addEventListener('click', event => event.stopPropagation())
-
-    // Any other clicks result in close
-    window.addEventListener('click', () => this.close());
-
-    // Right-clicks (in parent) result in open
+    // Open: when right-click on container
     this.parentNode.addEventListener('contextmenu', event => {
-      if (this.parentNode) {
-        event.preventDefault();
+      if (this.parentNode) { // only invoke if still attached
+        event.preventDefault(); // prevent browser menu
+        event.stopPropagation(); // no bubble
+        this.closeGlobal();
         this.open();
       }
     });
+
+    // Close: when click pretty much anywhere...
+    window.addEventListener('click', () => this.close());
+    window.addEventListener('contextmenu', () => this.close());
+
+    // ...except from within
+    this.addEventListener('click', event => event.stopPropagation());
   }
 
   open() {
-    console.log('open me!');
+    this.setAttribute('open', '');
   }
 
   close() {
-    console.log('shut me!');
+    this.removeAttribute('open');
+    this.top.classList.remove('open');
+  }
+
+  private closeGlobal(): void {
+    const doc = this.parentElement.getRootNode() as Document;
+    doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
   }
 }
