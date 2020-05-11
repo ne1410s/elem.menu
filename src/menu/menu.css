@@ -1,6 +1,6 @@
 ul, li, p { padding: 0; margin: 0; font: inherit; }
 
-.top:not(.open) { display: none; }
+slot, .top:not(.open) { display: none; }
 
 .top {
   border: 1px solid #ddd;
@@ -12,9 +12,11 @@ ul, li, p { padding: 0; margin: 0; font: inherit; }
   user-select: none;
 }
 
-li:hover { background-color: #ccc; }
+li.disabled { color: #999; }
+li:not(.disabled):hover { background-color: #ccc; }
 li {
   margin: .2em 0;
   padding: .5em 2em;
   display: block;
+  color: #000;
 }
