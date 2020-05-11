@@ -1,3 +1,4 @@
+import { q } from '@ne1410s/dom';
 import { CustomElementBase } from '@ne1410s/cust-elems';
 
 import markupUrl from './menu.html';
@@ -10,8 +11,7 @@ export class NeMenu extends CustomElementBase {
   private readonly top: HTMLUListElement;
 
   constructor() {
-    super(stylesUrl, markupUrl);
-
+    super(stylesUrl, markupUrl, 'open');
     this.top = this.root.querySelector('ul');
   }
 
@@ -33,25 +33,19 @@ export class NeMenu extends CustomElementBase {
         break;
     }
   }
-
   connectedCallback() {
 
-    // Open: when right-click on container
-    this.parentNode.addEventListener('contextmenu', event => {
-      if (this.parentNode) { // only invoke if still attached
-        event.preventDefault(); // prevent browser menu
-        event.stopPropagation(); // no bubble
-        this.closeGlobal();
-        this.open();
-      }
-    });
+    console.log(this.root.querySelector('slot').assignedNodes());
+    console.log(this.shadowRoot.querySelector('slot').assignedNodes());
 
-    // Close: when click pretty much anywhere...
-    window.addEventListener('click', () => this.close());
-    window.addEventListener('contextmenu', () => this.close());
+    q(this.parentNode).on('contextmenu', (e: MouseEvent) => this.onParentContext(e));
+    q(this).on('mousedown wheel', e => e.stopPropagation());
+    q(window).on('mousedown resize wheel', () => this.close());
+  }
 
-    // ...except from within
-    this.addEventListener('click', event => event.stopPropagation());
+  disconnectedCallback() {
+    // todo: prevent event handler build-up (... observables?..)
+    console.warn('TODO: prevent event handler build-up');
   }
 
   open() {
@@ -63,8 +57,23 @@ export class NeMenu extends CustomElementBase {
     this.top.classList.remove('open');
   }
 
-  private closeGlobal(): void {
+  private onParentContext(event: MouseEvent) {
+
+    if (!this.parentElement) return;
+
+    // prevent default (browser menu), and event bubbling
+    event.preventDefault();
+    event.stopPropagation();
+
+    // close all windows
     const doc = this.parentElement.getRootNode() as Document;
     doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
+
+    // update position
+    this.top.style.left = `${event.clientX}px`;
+    this.top.style.top = `${event.clientY}px`;
+
+    // open this one
+    this.open();
   }
 }

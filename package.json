@@ -48,6 +48,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@ne1410s/cust-elems": "^0.1.1"
+    "@ne1410s/cust-elems": "^0.1.1",
+    "@ne1410s/dom": "^0.2.0"
   }
 }

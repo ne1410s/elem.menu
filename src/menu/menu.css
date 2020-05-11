@@ -1,8 +1,20 @@
+ul, li, p { padding: 0; margin: 0; font: inherit; }
+
+.top:not(.open) { display: none; }
+
 .top {
-  border: 1px solid #555;
-  border-radius: 3px;
+  border: 1px solid #ddd;
+  position: fixed;
+  background-color: #fff;
+  box-shadow: 2px 2px 3px #888;
+  font-size: .65rem;
+  cursor: default;
+  user-select: none;
 }
 
-.top:not(.open) {
-  display: none;
+li:hover { background-color: #ccc; }
+li {
+  margin: .2em 0;
+  padding: .5em 2em;
+  display: block;
 }
