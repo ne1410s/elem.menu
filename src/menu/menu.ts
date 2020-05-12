@@ -3,7 +3,6 @@ import { CustomElementBase } from '@ne1410s/cust-elems';
 
 import markupUrl from './menu.html';
 import stylesUrl from './menu.css';
-import { QuickParam } from '@ne1410s/dom/dist/models';
 
 export class NeMenu extends CustomElementBase {
 
@@ -88,23 +87,29 @@ export class NeMenu extends CustomElementBase {
   private walk(ul: ParentNode): ChainSource[] {
     return Array
       .from(ul.children)
-      .filter(c => c.textContent?.trim())
-      .map(c => {
+      .filter(c => c instanceof HTMLLIElement && c.textContent)
+      .map((li: HTMLLIElement) => {
 
-        // todo we can propagate target=blank, if we use <a> wrapper round
-        // li items. (Could use javascript:void(0) or simply omit else)
+        const children = Array.from(li.children);
+        const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
 
-        const param = { tag: 'li', text: c.textContent, attr: {} } as QuickParam;
-        const onclick = c.hasAttribute('onclick')
-          ? c.getAttribute('onclick')
-          : c.hasAttribute('href')
-            ? `window.location.href="${c.getAttribute('href')}"`
-            : null;
+        const classes = [] as string[];
+        if (li.classList.contains('disabled')) classes.push('disabled');
+        if (a?.target === '_blank') classes.push('clickoff');
 
-        if (onclick) param.attr['onclick'] = onclick;
-        else param.attr['class'] = 'disabled';
+        const $domItem = q({
+          tag: 'li',
+          text: li.textContent,
+          attr: { class: classes.join(' ') },
+          evts: { click: a?.click ?? li.click },
+        });
 
-        return param;
+        const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
+        if (ul) {
+          $domItem.append(...this.walk(ul));
+        }
+  
+        return $domItem.get(0);
       });
   }
 }

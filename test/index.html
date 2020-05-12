@@ -6,6 +6,10 @@
   <script>(function() {
   
     const redMenu = document.createElement('ne14-menu');
+    const redItem1 = document.createElement('li');
+    redItem1.innerText = 'Item 1 Prog';
+    redItem1.classList.add('disabled');
+    redMenu.appendChild(redItem1);
 
     window.addEventListener('load', function() {
       document
@@ -36,24 +40,35 @@
   <div class="green box">
     <p>Present in initial markup</p>
     <ne14-menu>
-      <p>Item 1</p>
-      <p>Item 2</p>
-      <p>Item 3</p>
+      <li>Item 1</li>
+      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
+      <li><a href="https://google.com">Item 3</a></li>
+      <li>Item 4</li>
     </ne14-menu>
     <ne14-menu>
-      <p>Item 4</p>
-      <p>Item 5</p>
-      <p>Item 6</p>
+      <li>Item 1</li>
+      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
+      <li><a href="https://google.com">Item 3</a></li>
+      <li>Item 4</li>
     </ne14-menu>
   </div>
 
   <div class="blue box">
     <p>Present in initial markup too</p>
     <ne14-menu>
-      <span>Item 1</span>
-      <span>Item 2</span>
-      <span onclick="console.log('333')">Item 3</span>
-      <a href="https://www.google.com">Hades</a>
+      <li>Item 1</li>
+      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
+      <li><a href="https://google.com">Item 3</a></li>
+      <li>Item 4</li>
+      <li>
+        <span>Item 5</span>
+        <ul>
+          <li>5a</li>
+          <li>5b</li>
+          <li>5c</li>
+          <li>5d</li>
+        </ul>
+      </li>
     </ne14-menu>
   </div>
 
