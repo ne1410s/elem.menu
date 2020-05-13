@@ -82,11 +82,18 @@ export class NeMenu extends CustomElementBase {
     }
   }
 
-  private walk(ul: ParentNode, parentDisabled: boolean): ChainSource[] {
+  private onItemSelect(ref: string, originator: HTMLElement) {
+    originator.click();
+    q(this).fire('itemselect', ref);
+    this.close();
+  }
+
+  private walk(ul: ParentNode, parentDisabled: boolean, ref = ''): ChainSource[] {
+    let levelItemNo = 0;
     return Array
       .from(ul.children)
       .filter(c => c instanceof HTMLLIElement && (c.classList.contains('split') || c.textContent))
-      .map((li: HTMLLIElement, i: number) => {
+      .map((li: HTMLLIElement) => {
 
         const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
@@ -94,6 +101,7 @@ export class NeMenu extends CustomElementBase {
         const isSplit = li.classList.contains('split');
         const isGrouper = !isSplit && ul && ul.querySelector('li');
         const isDisabled = !isSplit && (parentDisabled || li.classList.contains('disabled'));
+        if (!isSplit) levelItemNo++;
 
         const classes = [] as string[];
         if (isSplit) classes.push('split');
@@ -101,17 +109,16 @@ export class NeMenu extends CustomElementBase {
           if (isDisabled) classes.push('disabled');
           if (isGrouper) classes.push('group');
           if (a?.target === '_blank') classes.push('click-out');
-          else if (a?.target) classes.push('click-in');
+          else if (a) classes.push('click-in');
         }
 
         const bestTextNode = [...children, li].find(c => c.innerText);
-        const bestText = isSplit ? null: bestTextNode?.innerText ?? `Item ${i + 1}`;
+        const bestText = isSplit ? null: bestTextNode?.innerText ?? `Item ${levelItemNo}`;
         const shortcut = isSplit || isGrouper ? null : li.getAttribute('aria-keyshortcuts');
-        
+        const liRef = `${ref}${levelItemNo}`;
         const handleClick = () => {
           if (!isDisabled && !isGrouper && !isGrouper) {
-            (a || li).click();
-            this.close();
+            this.onItemSelect(liRef, a || li);
           }
         };
 
@@ -122,7 +129,7 @@ export class NeMenu extends CustomElementBase {
 
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
         if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
-        if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled));
+        if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled, `${liRef}-`));
   
         return $domItem.get(0);
       });

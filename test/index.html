@@ -15,6 +15,14 @@
       document
         .querySelector('.red.box')
         .appendChild(redMenu);
+
+      document.querySelectorAll('ne14-menu').forEach(m => {
+        m.addEventListener('itemselect', event => console.log(event));
+      });
+
+      document.querySelectorAll('ne14-menu li').forEach(li => {
+        li.addEventListener('click', event => console.log(event));
+      });
     });
 
   })();</script>
