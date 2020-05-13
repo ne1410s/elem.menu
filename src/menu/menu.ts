@@ -43,6 +43,7 @@ export class NeMenu extends CustomElementBase {
   connectedCallback() {
     setTimeout(() => this.reload());
     q(this.parentNode).on('contextmenu', (e: MouseEvent) => this.onParentContext(e));
+    q(this, this.parentNode).on('contextmenu', e => { e.preventDefault(); e.stopPropagation(); });
     q(this).on('mousedown wheel', e => e.stopPropagation());
     q(window).on('mousedown resize wheel', () => this.close());
   }
@@ -70,43 +71,47 @@ export class NeMenu extends CustomElementBase {
 
   private onParentContext(event: MouseEvent) {
 
-    if (!this.parentElement) return;
+    if (this.isConnected) {
 
-    // prevent default (browser menu), and event bubbling
-    event.preventDefault();
-    event.stopPropagation();
+      // update position
+      this.top.style.left = `${event.clientX}px`;
+      this.top.style.top = `${event.clientY}px`;
 
-    // update position
-    this.top.style.left = `${event.clientX}px`;
-    this.top.style.top = `${event.clientY}px`;
-
-    // open
-    this.open();
+      // open
+      this.open();
+    }
   }
 
   private walk(ul: ParentNode): ChainSource[] {
     return Array
       .from(ul.children)
       .filter(c => c instanceof HTMLLIElement && c.textContent)
-      .map((li: HTMLLIElement) => {
+      .map((li: HTMLLIElement, i: number) => {
 
-        const children = Array.from(li.children);
+        const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
-
+        
         const classes = [] as string[];
         if (li.classList.contains('disabled')) classes.push('disabled');
         if (a?.target === '_blank') classes.push('clickoff');
 
+        const textNode = [...children, li].find(c => c.innerText);
         const $domItem = q({
           tag: 'li',
-          text: li.textContent,
+          text: textNode?.innerText ?? `Item ${i + 1}`,
           attr: { class: classes.join(' ') },
-          evts: { click: a?.click ?? li.click },
+        }).on('click contextmenu', () => {
+          if (!li.classList.contains('disabled')) {
+            (a || li).click();
+            this.close();
+          }
         });
 
         const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
-        if (ul) {
-          $domItem.append(...this.walk(ul));
+        if (ul && ul.querySelector('li')) {          
+          $domItem
+            .appendIn({ tag: 'ul' })
+            .append(...this.walk(ul));
         }
   
         return $domItem.get(0);
