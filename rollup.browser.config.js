@@ -14,7 +14,8 @@ export default {
     file: pkg.browser,
     format: 'umd',
     globals: {
-      '@ne1410s/cust-elems': 'ne_cust_elems'
+      '@ne1410s/cust-elems': 'ne_cust_elems',
+      '@ne1410s/dom': 'ne_dom',
     }
   },
   plugins: [

@@ -8,7 +8,8 @@ import pkg from './package.json';
 export default {
   input: 'src/index.ts',
   external: [
-    '@ne1410s/cust-elems'
+    '@ne1410s/cust-elems',
+    '@ne1410s/dom',
   ],
   output: [
     { file: pkg.main, format: 'cjs' },
