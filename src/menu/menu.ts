@@ -66,7 +66,7 @@ export class NeMenu extends CustomElementBase {
 
   /** Reloads active contents based on client dom. */
   reload(): void {
-    q(this.top).empty().append(...this.walk(this));
+    q(this.top).empty().append(...this.walk(this, false));
   }
 
   private onParentContext(event: MouseEvent) {
@@ -82,37 +82,47 @@ export class NeMenu extends CustomElementBase {
     }
   }
 
-  private walk(ul: ParentNode): ChainSource[] {
+  private walk(ul: ParentNode, parentDisabled: boolean): ChainSource[] {
     return Array
       .from(ul.children)
-      .filter(c => c instanceof HTMLLIElement && c.textContent)
+      .filter(c => c instanceof HTMLLIElement && (c.classList.contains('split') || c.textContent))
       .map((li: HTMLLIElement, i: number) => {
 
         const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
-        
-        const classes = [] as string[];
-        if (li.classList.contains('disabled')) classes.push('disabled');
-        if (a?.target === '_blank') classes.push('clickoff');
+        const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
+        const isSplit = li.classList.contains('split');
+        const isGrouper = !isSplit && ul && ul.querySelector('li');
+        const isDisabled = !isSplit && (parentDisabled || li.classList.contains('disabled'));
 
-        const textNode = [...children, li].find(c => c.innerText);
-        const $domItem = q({
-          tag: 'li',
-          text: textNode?.innerText ?? `Item ${i + 1}`,
-          attr: { class: classes.join(' ') },
-        }).on('click contextmenu', () => {
-          if (!li.classList.contains('disabled')) {
+        const classes = [] as string[];
+        if (isSplit) classes.push('split');
+        else {
+          if (isDisabled) classes.push('disabled');
+          if (isGrouper) classes.push('group');
+          if (a?.target === '_blank') classes.push('click-out');
+          else if (a?.target) classes.push('click-in');
+        }
+
+        const bestTextNode = [...children, li].find(c => c.innerText);
+        const bestText = isSplit ? null: bestTextNode?.innerText ?? `Item ${i + 1}`;
+        const shortcut = isSplit || isGrouper ? null : li.getAttribute('aria-keyshortcuts');
+        
+        const handleClick = () => {
+          if (!isDisabled && !isGrouper && !isGrouper) {
             (a || li).click();
             this.close();
           }
-        });
+        };
 
-        const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
-        if (ul && ul.querySelector('li')) {          
-          $domItem
-            .appendIn({ tag: 'ul' })
-            .append(...this.walk(ul));
-        }
+        const $domItem = q({ tag: 'li' })
+          .attr('class', classes.length ? classes.join(' ') : null)
+          .attr('aria-keyshortcuts', shortcut)
+          .on('click contextmenu', handleClick);
+
+        if (bestText) $domItem.append({ tag: 'p', text: bestText });
+        if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
+        if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled));
   
         return $domItem.get(0);
       });

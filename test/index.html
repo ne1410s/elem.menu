@@ -56,16 +56,19 @@
   <div class="blue box">
     <p>Present in initial markup too</p>
     <ne14-menu>
-      <li>My Item 1</li>
+      <li aria-keyshortcuts="Alt+C">My Item 1</li>
+      <li class="split"></li>
       <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
       <li><a href="https://google.com">My Item 3</a></li>
       <li onclick="console.log(444)">My Item 4</li>
+      <li class="split"></li>
       <li>
         <span>My Item 5</span>
         <ul>
           <li>5a</li>
-          <li>5b</li>
-          <li>5c</li>
+          <li class="split"></li>
+          <li aria-keyshortcuts="Alt+B">5b</li>
+          <li class="disabled">5c</li>
           <li>5d</li>
         </ul>
       </li>
