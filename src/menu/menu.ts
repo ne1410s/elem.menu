@@ -74,6 +74,13 @@ export class NeMenu extends CustomElementBase {
     if (this.isConnected) {
 
       // update position
+      const w = this.top.offsetWidth;
+      const h = this.top.offsetHeight;
+
+      const win_w = window.innerWidth;
+      const win_h = window.innerHeight;
+
+
       this.top.style.left = `${event.clientX}px`;
       this.top.style.top = `${event.clientY}px`;
 
@@ -98,9 +105,13 @@ export class NeMenu extends CustomElementBase {
         const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
         const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
+        const aChildren = Array.from(a?.children || []).map(el => el as HTMLElement);
+        const img = children.concat(aChildren)
+          .find(n => n instanceof HTMLImageElement) as HTMLImageElement;
         const isSplit = li.classList.contains('split');
         const isGrouper = !isSplit && ul && ul.querySelector('li');
         const isDisabled = !isSplit && (parentDisabled || li.classList.contains('disabled'));
+        const hasIcon = !isSplit && img;
         if (!isSplit) levelItemNo++;
 
         const classes = [] as string[];
@@ -127,6 +138,7 @@ export class NeMenu extends CustomElementBase {
           .attr('aria-keyshortcuts', shortcut)
           .on('click contextmenu', handleClick);
 
+        if (hasIcon) $domItem.append({ tag: 'img', attr: { src: img.src } });
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
         if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
         if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled, `${liRef}-`));

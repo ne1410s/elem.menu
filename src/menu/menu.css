@@ -1,5 +1,6 @@
 ul, li, p { padding: 0; margin: 0; font: inherit; }
-slot, .top:not(.open), ul:not(.top) { display: none; }
+slot { display: none; }
+.top:not(.open), ul:not(.top) { visibility: hidden; }
 
 ul {
   border: 1px solid #ddd;
@@ -12,6 +13,13 @@ ul {
   font-size: .65rem;
   user-select: none;
   z-index: 9999999;
+}
+
+li > img { 
+  max-width: 1em; max-height: 1em; 
+  position: absolute;
+  top: 50%; left: 1em;
+  transform: translate(-50%, -50%);
 }
 
 li > p:not(:empty) { margin: 0 1em; }
