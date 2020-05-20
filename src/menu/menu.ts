@@ -106,13 +106,14 @@ export class NeMenu extends CustomElementBase {
         const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
         const ul = children.find(n => n instanceof HTMLUListElement) as HTMLUListElement;
-        const aChildren = Array.from(a?.children || []).map(el => el as HTMLElement);
-        const img = children.concat(aChildren)
-          .find(n => n instanceof HTMLImageElement) as HTMLImageElement;
         const isSplit = li.classList.contains('split');
         const isGrouper = !isSplit && ul && ul.querySelector('li');
         const isDisabled = !isSplit && (parentDisabled || li.classList.contains('disabled'));
-        const hasIcon = !isSplit && img;
+        const aChildren = Array.from(a?.children || []).map(el => el as HTMLElement);
+        const imgs = children.concat(aChildren)
+          .filter(n => n instanceof HTMLImageElement)
+          .map(n => n as HTMLImageElement);
+          
         if (!isSplit) levelItemNo++;
 
         const classes = [] as string[];
@@ -151,7 +152,19 @@ export class NeMenu extends CustomElementBase {
           .on('mouseenter', handleMouseEnter)
           .on('mouseleave', e => (e.target as Element).classList.remove('hover'));
 
-        if (hasIcon) $domItem.append({ tag: 'img', attr: { src: img.src } });
+        const unicodeFront = li.dataset.unicodeFront;
+        const unicodeBack = li.dataset.unicodeBack;
+        const imgFront = imgs.find(i => !i.classList.contains('back'));
+        const imgBack = imgs.find(i => i.classList.contains('back'));
+
+        //DOM TODO: .html() method and quick param!
+
+        if (unicodeFront) $domItem.append({ tag: 'span', text: `&#x${unicodeFront};`, attr: { class: 'icon front' } });
+        else if (imgFront) $domItem.append({ tag: 'img', attr: { class: 'icon front', src: imgFront.src } });
+        
+        if (unicodeBack) $domItem.append({ tag: 'span', text: `&#x${unicodeBack};`, attr: { class: 'icon back' } });
+        else if (imgBack) $domItem.append({ tag: 'img', attr: { class: 'icon back', src: imgBack.src } });
+        
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
         if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
         if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled, `${liRef}-`));
