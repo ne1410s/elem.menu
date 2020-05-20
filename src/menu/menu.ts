@@ -43,8 +43,8 @@ export class NeMenu extends CustomElementBase {
   connectedCallback() {
     setTimeout(() => this.reload());
     q(this.parentNode).on('contextmenu', (e: MouseEvent) => this.onParentContext(e));
-    q(this, this.parentNode).on('contextmenu', e => { e.preventDefault(); e.stopPropagation(); });
-    q(this).on('mousedown wheel', e => e.stopPropagation());
+    q(this, this.parentNode).on('contextmenu wheel', e => { e.preventDefault(); e.stopPropagation(); });
+    q(this).on('mousedown', e => e.stopPropagation());
     q(window).on('mousedown resize wheel', () => this.close());
   }
 
@@ -73,17 +73,18 @@ export class NeMenu extends CustomElementBase {
 
     if (this.isConnected) {
 
-      // update position
-      const w = this.top.offsetWidth;
-      const h = this.top.offsetHeight;
+      // update position (y)
+      const y = event.clientY;
+      const height = this.top.offsetHeight;
+      const posY = y + height + 2 > window.innerHeight ? y - height : y;
+      this.top.style.top = `${Math.max(0, posY)}px`;
 
-      const win_w = window.innerWidth;
-      const win_h = window.innerHeight;
-
-
-      this.top.style.left = `${event.clientX}px`;
-      this.top.style.top = `${event.clientY}px`;
-
+      // update position (x)
+      const x = event.clientX;
+      const width = this.top.offsetWidth;
+      const posX = x + width + 2 > window.innerWidth ? x - width : x;
+      this.top.style.left = `${Math.max(0, posX)}px`;
+      
       // open
       this.open();
     }
@@ -132,11 +133,23 @@ export class NeMenu extends CustomElementBase {
             this.onItemSelect(liRef, a || li);
           }
         };
+        const handleMouseEnter = (e: Event) => {
+          const domLi = e.target as HTMLLIElement;
+          if (isGrouper) {
+            const domUl = Array.from(domLi.children).find(n => n instanceof HTMLUListElement);
+            const liRect = domLi.getBoundingClientRect();
+            domUl.classList.toggle('nestle', liRect.right + domUl.clientWidth + 2 > window.innerWidth);
+          }
+
+          domLi.classList.toggle('hover', !isSplit && !isDisabled);
+        };
 
         const $domItem = q({ tag: 'li' })
           .attr('class', classes.length ? classes.join(' ') : null)
           .attr('aria-keyshortcuts', shortcut)
-          .on('click contextmenu', handleClick);
+          .on('click contextmenu', handleClick)
+          .on('mouseenter', handleMouseEnter)
+          .on('mouseleave', e => (e.target as Element).classList.remove('hover'));
 
         if (hasIcon) $domItem.append({ tag: 'img', attr: { src: img.src } });
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
