@@ -6,6 +6,7 @@ ul {
   border: 1px solid #ddd;
   background-color: #fff;
   box-shadow: 2px 2px 3px #888;
+  transition: background-color .6s;
 }
 
 .top {
@@ -15,8 +16,8 @@ ul {
   z-index: 9999999;
 }
 
-.icon.front { left: 1em; transform: translate(-50%, -50%); }
-.icon.back { right: 1em; transform: translate(50%, -50%); } 
+.icon.left { left: 1em; transform: translate(-50%, -50%); }
+.icon.right { right: 1em; transform: translate(50%, -50%); } 
 .icon { 
   max-width: 1em; max-height: 1em; 
   position: absolute; top: 50%;
@@ -26,7 +27,8 @@ ul {
 li > p:not(:empty) { margin: 0 1em; }
 li.disabled { color: #bbb; }
 li.split { border-top: 1px solid #bbb; padding: 0; margin: .3em; }
-li.hover { background-color: #bbb; }
+li.split:first-child, li.split:last-child, li.split + li.split { display: none; }
+li.hover:not(.disabed):not(.split) { background-color: #bbb; }
 li.hover > ul { visibility: visible; }
 li {
   margin: .2em 0;
@@ -55,4 +57,14 @@ ul:not(.top) {
 
 ul.nestle {
   left: .5em; top: 100%;
+}
+
+.top.dark li { color: #eee; }
+.top.dark li.disabled { color: #666; }
+.top.dark li.split { border-top-color: #888; padding: 0; margin: .3em; }
+.top.dark li.hover:not(.disabed):not(.split) { background-color: #666; }
+.top.dark, .top.dark ul {
+  background-color: #333;
+  border-color: #888;
+  box-shadow: 2px 2px 3px #333;
 }

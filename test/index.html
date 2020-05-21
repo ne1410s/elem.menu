@@ -16,13 +16,11 @@
         .querySelector('.red.box')
         .appendChild(redMenu);
 
-      document.querySelectorAll('ne14-menu').forEach(m => {
-        m.addEventListener('itemselect', event => console.log(event));
-      });
-
-      document.querySelectorAll('ne14-menu li').forEach(li => {
-        li.addEventListener('click', event => console.log(event));
-      });
+      document
+        .querySelectorAll('ne14-menu')
+        .forEach(m => {
+          m.addEventListener('itemselect', event => console.log(event));
+        });
     });
 
   })();</script>
@@ -49,18 +47,19 @@
       <li><a href="https://google.com">Item 3</a></li>
       <li>Item 4</li>
     </ne14-menu>
-    <ne14-menu>
-      <li aria-keyshortcuts="Alt+C" data-char-front="02bc" data-char-back="313c">My Item 1</li>
+    <ne14-menu mode="dark">
+      <li aria-keyshortcuts="Alt+C" data-char-left="02bc" data-char-right="313c">My Item 1</li>
       <li class="split"></li>
       <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
       <li><a href="https://google.com">My Item 3</a></li>
+      <li class="split"></li>
       <li onclick="console.log(444)">
         <img src="https://cdn3.iconfinder.com/data/icons/summer-beach-4/32/Summer_Icon-12-512.png"/>
         <span>My Item 4</span>
-        <img class="back" src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"/>
+        <img class="right" src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"/>
       </li>
       <li class="split"></li>
-      <li>
+      <li class="disabled">
         <span>My Item 5</span>
         <ul>
           <li>5a</li>
@@ -70,6 +69,7 @@
           <li>5d</li>
         </ul>
       </li>
+      <li class="split"></li>
     </ne14-menu>
   </div>
   
@@ -78,24 +78,16 @@
   </div>
 
   <div class="blue box">
-    <p>Present in initial markup too</p>
-    <ne14-menu>
-      <li aria-keyshortcuts="Alt+C">My Item 1</li>
-      <li class="split"></li>
-      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
-      <li><a href="https://google.com">My Item 3</a></li>
-      <li onclick="console.log(444)">My Item 4</li>
-      <li class="split"></li>
-      <li>
-        <span>My Item 5</span>
-        <ul>
-          <li>5a</li>
-          <li class="split"></li>
-          <li aria-keyshortcuts="Alt+B">5b</li>
-          <li class="disabled">5c</li>
-          <li>5d</li>
-        </ul>
+    <p>Present in initial markup, with font stuff</p>
+    <ne14-menu style="font-family: 'Courier New', Courier, monospace;">
+      <li>Hello world</li>
+      <li data-char-right="261b">
+        <a href="https://tempuri.com" target="_blank">Click out</a>
       </li>
+      <li class="split"></li>
+      <li class="disabled">Phone home</li>
+      <li class="split"></li>
+      <li data-char-left="1f648" data-char-right="1f648">Woop!</li>
     </ne14-menu>
   </div>
 </body>

@@ -1,4 +1,4 @@
-import { q, ChainSource } from '@ne1410s/dom';
+import { q, ChainSource, Chainable } from '@ne1410s/dom';
 import { CustomElementBase } from '@ne1410s/cust-elems';
 
 import markupUrl from './menu.html';
@@ -6,10 +6,11 @@ import stylesUrl from './menu.css';
 
 export class NeMenu extends CustomElementBase {
 
-  public static readonly observedAttributes = ['mode', 'open'];
-  private static readonly CHAR_REF_REGEX = /^[0-9a-f]{4}$/i;
+  public static readonly observedAttributes = ['mode'];
+  private static readonly CHAR_REF_REGEX = /^[0-9a-f]{4,5}$/i;
 
   private readonly top: HTMLUListElement;
+  private _connected: boolean;
 
   constructor() {
     super(stylesUrl, markupUrl);
@@ -24,44 +25,38 @@ export class NeMenu extends CustomElementBase {
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     switch (name) {
-
       case 'mode':
-        // ...
-        break;
-
-      case 'open':
-        
-        // close all menus
-        const doc = this.parentElement.getRootNode() as Document;
-        doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
-
-        // style this one as open
-        this.top.classList.add('open');
+        this.top.classList.toggle('dark', newValue === 'dark');
         break;
     }
   }
 
   connectedCallback() {
-    setTimeout(() => this.reload());
-    q(this.parentNode).on('contextmenu', (e: MouseEvent) => this.onParentContext(e));
-    q(this, this.parentNode).on('contextmenu wheel', e => { e.preventDefault(); e.stopPropagation(); });
-    q(this).on('mousedown', e => e.stopPropagation());
-    q(window).on('mousedown resize wheel', () => this.close());
-  }
+    if (!this._connected) {
 
-  disconnectedCallback() {
-    // todo: prevent event handler build-up (... observables?..)
-    console.warn('TODO: prevent event handler build-up');
+      setTimeout(() => this.reload());
+      q(this.parentNode).on('contextmenu', (e: MouseEvent) => this.onParentContext(e));
+      q(this, this.parentNode).on('contextmenu wheel', e => { e.preventDefault(); e.stopPropagation(); });
+      q(this).on('mousedown', e => e.stopPropagation());
+      q(window).on('mousedown resize wheel', () => this.close());
+
+      this._connected = true;
+    }
   }
 
   /** Opens the menu.  */
   open(): void {
-    this.setAttribute('open', '');
+
+    // close all menus
+    const doc = this.parentElement.getRootNode() as Document;
+    doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
+
+    // style this one as open
+    this.top.classList.add('open');
   }
 
   /** Closes the menu. */
   close(): void {
-    this.removeAttribute('open');
     this.top.classList.remove('open');
   }
 
@@ -91,9 +86,9 @@ export class NeMenu extends CustomElementBase {
     }
   }
 
-  private onItemSelect(ref: string, originator: HTMLElement) {
-    originator.click();
-    q(this).fire('itemselect', ref);
+  private onItemSelect(title: string, ref: string, origin: HTMLElement) {
+    origin.click();
+    q(this).fire('itemselect', { title, ref, origin });
     this.close();
   }
 
@@ -101,8 +96,8 @@ export class NeMenu extends CustomElementBase {
     let levelItemNo = 0;
     return Array
       .from(ul.children)
-      .filter(c => c instanceof HTMLLIElement && (c.classList.contains('split') || c.textContent))
-      .map((li: HTMLLIElement) => {
+      .filter(c => c instanceof HTMLLIElement && !c.classList.contains('hidden') && (c.textContent || c.classList.contains('split')))
+      .reduce((acc, li: HTMLLIElement) => {
 
         const children = Array.from(li.children).map(el => el as HTMLElement);
         const a = children.find(n => n instanceof HTMLAnchorElement) as HTMLAnchorElement;
@@ -131,8 +126,8 @@ export class NeMenu extends CustomElementBase {
         const shortcut = isSplit || isGrouper ? null : li.getAttribute('aria-keyshortcuts');
         const liRef = `${ref}${levelItemNo}`;
         const handleClick = () => {
-          if (!isDisabled && !isGrouper && !isGrouper) {
-            this.onItemSelect(liRef, a || li);
+          if (!isDisabled && !isGrouper && !isSplit) {
+            this.onItemSelect(bestText, liRef, a || li);
           }
         };
         const handleMouseEnter = (e: Event) => {
@@ -153,26 +148,30 @@ export class NeMenu extends CustomElementBase {
           .on('mouseenter', handleMouseEnter)
           .on('mouseleave', e => (e.target as Element).classList.remove('hover'));
 
-        const charFront = li.dataset.charFront;
-        const charBack = li.dataset.charBack;
-        const imgFront = imgs.find(i => !i.classList.contains('back'));
-        const imgBack = imgs.find(i => i.classList.contains('back'));
+        const charLeft = li.dataset.charLeft;
+        const charRight = li.dataset.charRight;
+        const imgLeft = imgs.find(i => !i.classList.contains('right'));
+        const imgRight = imgs.find(i => i.classList.contains('right'));
 
         if (!isSplit && !isGrouper && bestText) {
-          if (NeMenu.CHAR_REF_REGEX.test(charFront)) $domItem.append(`<span class='icon front'>&#x${charFront};</span>`);
-          else if (charFront) console.warn(`ne14-menu: Bad hex code '${charFront}' at front of '${bestText}'.`);
-          else if (imgFront) $domItem.append(`<img class='icon front' src='${imgFront.src}'/>`);
+          if (NeMenu.CHAR_REF_REGEX.test(charLeft)) $domItem.append(`<span class='icon left'>&#x${charLeft};</span>`);
+          else if (charLeft) console.warn(`ne14-menu: Bad hex code '${charLeft}' to left of '${bestText}'.`);
+          else if (imgLeft) $domItem.append(`<img class='icon left' src='${imgLeft.src}'/>`);
 
-          if (NeMenu.CHAR_REF_REGEX.test(charBack)) $domItem.append(`<span class='icon back'>&#x${charBack};</span>`);
-          else if (charBack) console.warn(`ne14-menu: Bad hex code '${charBack}' at back of '${bestText}'.`);
-          else if (imgBack) $domItem.append(`<img class='icon back' src='${imgBack.src}'/>`);
+          if (NeMenu.CHAR_REF_REGEX.test(charRight)) $domItem.append(`<span class='icon right'>&#x${charRight};</span>`);
+          else if (charRight) console.warn(`ne14-menu: Bad hex code '${charRight}' to right of '${bestText}'.`);
+          else if (imgRight) $domItem.append(`<img class='icon right' src='${imgRight.src}'/>`);
         }
 
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
         if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
         if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled, `${liRef}-`));
   
-        return $domItem.get(0);
-      });
+        // Do not push two consecutive splits
+        if (!isSplit || !acc[acc.length - 1]?.classList?.contains('split')) {
+          acc.push($domItem.elements[0] as HTMLLIElement);
+        }
+        return acc;
+      }, [] as HTMLLIElement[]);
   }
 }
