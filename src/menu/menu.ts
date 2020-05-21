@@ -7,6 +7,7 @@ import stylesUrl from './menu.css';
 export class NeMenu extends CustomElementBase {
 
   public static readonly observedAttributes = ['mode', 'open'];
+  private static readonly CHAR_REF_REGEX = /^[0-9a-f]{4}$/i;
 
   private readonly top: HTMLUListElement;
 
@@ -152,19 +153,21 @@ export class NeMenu extends CustomElementBase {
           .on('mouseenter', handleMouseEnter)
           .on('mouseleave', e => (e.target as Element).classList.remove('hover'));
 
-        const unicodeFront = li.dataset.unicodeFront;
-        const unicodeBack = li.dataset.unicodeBack;
+        const charFront = li.dataset.charFront;
+        const charBack = li.dataset.charBack;
         const imgFront = imgs.find(i => !i.classList.contains('back'));
         const imgBack = imgs.find(i => i.classList.contains('back'));
 
-        //DOM TODO: .html() method and quick param!
+        if (!isSplit && !isGrouper && bestText) {
+          if (NeMenu.CHAR_REF_REGEX.test(charFront)) $domItem.append(`<span class='icon front'>&#x${charFront};</span>`);
+          else if (charFront) console.warn(`ne14-menu: Bad hex code '${charFront}' at front of '${bestText}'.`);
+          else if (imgFront) $domItem.append(`<img class='icon front' src='${imgFront.src}'/>`);
 
-        if (unicodeFront) $domItem.append({ tag: 'span', text: `&#x${unicodeFront};`, attr: { class: 'icon front' } });
-        else if (imgFront) $domItem.append({ tag: 'img', attr: { class: 'icon front', src: imgFront.src } });
-        
-        if (unicodeBack) $domItem.append({ tag: 'span', text: `&#x${unicodeBack};`, attr: { class: 'icon back' } });
-        else if (imgBack) $domItem.append({ tag: 'img', attr: { class: 'icon back', src: imgBack.src } });
-        
+          if (NeMenu.CHAR_REF_REGEX.test(charBack)) $domItem.append(`<span class='icon back'>&#x${charBack};</span>`);
+          else if (charBack) console.warn(`ne14-menu: Bad hex code '${charBack}' at back of '${bestText}'.`);
+          else if (imgBack) $domItem.append(`<img class='icon back' src='${imgBack.src}'/>`);
+        }
+
         if (bestText) $domItem.append({ tag: 'p', text: bestText });
         if (shortcut) $domItem.append({ tag: 'p', text: shortcut });
         if (isGrouper) $domItem.appendIn({ tag: 'ul' }).append(...this.walk(ul, isDisabled, `${liRef}-`));

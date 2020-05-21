@@ -15,12 +15,12 @@ ul {
   z-index: 9999999;
 }
 
-.icon.front { left: 1em; }
-.icon.back { right: 1em; } 
+.icon.front { left: 1em; transform: translate(-50%, -50%); }
+.icon.back { right: 1em; transform: translate(50%, -50%); } 
 .icon { 
   max-width: 1em; max-height: 1em; 
   position: absolute; top: 50%;
-  transform: translate(-50%, -50%);
+  line-height: 0;
 }
 
 li > p:not(:empty) { margin: 0 1em; }
