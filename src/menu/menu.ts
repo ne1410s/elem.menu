@@ -53,12 +53,16 @@ export class NeMenu extends CustomElementBase {
     doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
 
     // style this one as open
+    q(this).fire('menuopen');
     this.top.classList.add('open');
   }
 
   /** Closes the menu. */
   close(): void {
-    this.top.classList.remove('open');
+    if (this.top.classList.contains('open')) {
+      q(this).fire('menuclose');
+      this.top.classList.remove('open');
+    }
   }
 
   /** Reloads active contents based on client dom. */

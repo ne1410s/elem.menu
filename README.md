@@ -58,7 +58,9 @@ menu.addEventListener('itemselect', event => {
   console.log('Item Selected!', event);
 });
 ```
-- `itemselect` Occurs when an item is clicked. The custom event detail contains the text of the menu item, its in-menu reference and the original html element
+- `itemselect` occurs when an item is clicked. The custom event detail contains the text of the menu item, its in-menu reference and the original html element
+- `itemhover` and `itemunhover` occur when mouse enters or leaves an item
+- `menuopen` and `menuclose` occur when the menu is opened or closed
 ### Methods
 - `open()` Opens the menu (after closing any others)
 - `close()` Closes the menu
