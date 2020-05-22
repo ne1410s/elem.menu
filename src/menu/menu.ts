@@ -53,15 +53,15 @@ export class NeMenu extends CustomElementBase {
     doc.querySelectorAll('ne14-menu').forEach((m: NeMenu) => m.close());
 
     // style this one as open
-    q(this).fire('menuopen');
     this.top.classList.add('open');
+    q(this).fire('menuopen');
   }
 
   /** Closes the menu. */
   close(): void {
     if (this.top.classList.contains('open')) {
-      q(this).fire('menuclose');
       this.top.classList.remove('open');
+      q(this).fire('menuclose');
     }
   }
 
@@ -143,15 +143,15 @@ export class NeMenu extends CustomElementBase {
               domUl.classList.toggle('nestle', liRect.right + domUl.clientWidth + 2 > window.innerWidth);
             }
 
-            q(this).fire('itemhover', eventDetail);
             domLi.classList.add('hover');
+            q(this).fire('itemhover', eventDetail);
           }
         };
 
         const handleMouseLeave = (e: Event) => {
           if (!isDisabled && !isSplit) {
-            q(this).fire('itemunhover', eventDetail);
             (e.target as Element).classList.remove('hover');
+            q(this).fire('itemunhover', eventDetail);
           }
         };
 
