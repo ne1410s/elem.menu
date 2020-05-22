@@ -3,6 +3,7 @@ import { CustomElementBase } from '@ne1410s/cust-elems';
 
 import markupUrl from './menu.html';
 import stylesUrl from './menu.css';
+import { MenuEventDetail } from '../models';
 
 export class NeMenu extends CustomElementBase {
 
@@ -86,12 +87,6 @@ export class NeMenu extends CustomElementBase {
     }
   }
 
-  private onItemSelect(title: string, ref: string, origin: HTMLElement) {
-    origin.click();
-    q(this).fire('itemselect', { title, ref, origin });
-    this.close();
-  }
-
   private walk(ul: ParentNode, parentDisabled: boolean, ref = ''): ChainSource[] {
     let levelItemNo = 0;
     return Array
@@ -125,20 +120,35 @@ export class NeMenu extends CustomElementBase {
         const bestText = isSplit ? null: bestTextNode?.innerText ?? `Item ${levelItemNo}`;
         const shortcut = isSplit || isGrouper ? null : li.getAttribute('aria-keyshortcuts');
         const liRef = `${ref}${levelItemNo}`;
+        const eventDetail: MenuEventDetail = { ref: liRef, title: bestText, origin: a || li };
+        
         const handleClick = () => {
           if (!isDisabled && !isGrouper && !isSplit) {
-            this.onItemSelect(bestText, liRef, a || li);
+            eventDetail.origin.click();
+            q(this).fire('itemselect', eventDetail);
+            this.close();
           }
         };
-        const handleMouseEnter = (e: Event) => {
-          const domLi = e.target as HTMLLIElement;
-          if (isGrouper) {
-            const domUl = Array.from(domLi.children).find(n => n instanceof HTMLUListElement);
-            const liRect = domLi.getBoundingClientRect();
-            domUl.classList.toggle('nestle', liRect.right + domUl.clientWidth + 2 > window.innerWidth);
-          }
 
-          domLi.classList.toggle('hover', !isSplit && !isDisabled);
+        const handleMouseEnter = (e: Event) => {
+          if (!isDisabled && !isSplit) {
+            const domLi = e.target as HTMLLIElement;
+            if (isGrouper) {
+              const domUl = Array.from(domLi.children).find(n => n instanceof HTMLUListElement);
+              const liRect = domLi.getBoundingClientRect();
+              domUl.classList.toggle('nestle', liRect.right + domUl.clientWidth + 2 > window.innerWidth);
+            }
+
+            q(this).fire('itemhover', eventDetail);
+            domLi.classList.add('hover');
+          }
+        };
+
+        const handleMouseLeave = (e: Event) => {
+          if (!isDisabled && !isSplit) {
+            q(this).fire('itemunhover', eventDetail);
+            (e.target as Element).classList.remove('hover');
+          }
         };
 
         const $domItem = q({ tag: 'li' })
@@ -146,7 +156,7 @@ export class NeMenu extends CustomElementBase {
           .attr('aria-keyshortcuts', shortcut)
           .on('click contextmenu', handleClick)
           .on('mouseenter', handleMouseEnter)
-          .on('mouseleave', e => (e.target as Element).classList.remove('hover'));
+          .on('mouseleave', handleMouseLeave);
 
         const charLeft = li.dataset.charLeft;
         const charRight = li.dataset.charRight;

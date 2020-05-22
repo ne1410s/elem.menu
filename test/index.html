@@ -24,6 +24,8 @@
         .querySelectorAll('ne14-menu')
         .forEach(m => {
           m.addEventListener('itemselect', event => console.log(event));
+          m.addEventListener('itemhover', event => console.log(event));
+          m.addEventListener('itemunhover', event => console.log(event));
         });
     });
 
