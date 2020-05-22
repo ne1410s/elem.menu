@@ -1,6 +1,6 @@
 {
   "name": "@ne1410s/menu",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Lightweight ES context menu.",
   "main": "dist/ne14_menu.cjs.min.js",
   "module": "dist/ne14_menu.esm.min.js",
