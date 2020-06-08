@@ -1,4 +1,3 @@
-import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
 import url from '@rollup/plugin-url';
@@ -17,7 +16,6 @@ export default {
   ],
   plugins: [
     typescript(),
-    terser({ include: ['*.cjs.min.js', '*.esm.min.js'] }),
     json(),
     url({ include: ['src/**/*.css', 'src/**/*.html'] })
   ]
