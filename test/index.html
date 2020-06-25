@@ -1,101 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <title>Test</title>
-  <script src="../dist/ne14_menu.umd.min.js"></script>
-  <script>(function() {
-  
-    const redMenu = document.createElement('ne14-menu');
-    const redItem1 = document.createElement('li');
-    const redSub1 = document.createElement('ul');
-    const redSubItem1 = document.createElement('li');
-    redItem1.innerText = 'Item 1 Prog';
-    redSubItem1.innerText = 'Edit labels';
-    redSub1.appendChild(redSubItem1);
-    redItem1.appendChild(redSub1);
-    redMenu.appendChild(redItem1);
+  <head>
+    <title>Test</title>
+    <script src="../dist/ne14_menu.umd.min.js"></script>
+    <script>
+      (function () {
+        const redMenu = document.createElement('ne14-menu');
+        const redItem1 = document.createElement('li');
+        const redSub1 = document.createElement('ul');
+        const redSubItem1 = document.createElement('li');
+        redItem1.innerText = 'Item 1 Prog';
+        redSubItem1.innerText = 'Edit labels';
+        redSub1.appendChild(redSubItem1);
+        redItem1.appendChild(redSub1);
+        redMenu.appendChild(redItem1);
 
-    window.addEventListener('load', function() {
-      document
-        .querySelector('.red.box')
-        .appendChild(redMenu);
+        window.addEventListener('load', function () {
+          document.querySelector('.red.box').appendChild(redMenu);
 
-      document
-        .querySelectorAll('ne14-menu')
-        .forEach(m => {
-          m.addEventListener('itemselect', event => console.log(event));
-          m.addEventListener('itemhover', event => console.log(event));
-          m.addEventListener('itemunhover', event => console.log(event));
+          document.querySelectorAll('ne14-menu').forEach((m) => {
+            m.addEventListener('itemselect', (event) => console.log(event));
+            m.addEventListener('itemhover', (event) => console.log(event));
+            m.addEventListener('itemunhover', (event) => console.log(event));
+          });
         });
-    });
+      })();
+    </script>
+    <style>
+      html {
+        font: 20px Calibri;
+      }
+      .box {
+        margin: 2em;
+        padding: 1em;
+        text-align: center;
+      }
+      .red {
+        background-color: red;
+      }
+      .yellow {
+        background-color: yellow;
+      }
+      .green {
+        background-color: green;
+      }
+      .blue {
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="red box">
+      <p>Added programatically</p>
+    </div>
 
-  })();</script>
-  <style>
-    html { font: 20px Calibri; }
-    .box { margin: 2em; padding: 1em; text-align: center;}
-    .red { background-color: red; }
-    .yellow { background-color: yellow; }
-    .green { background-color: green; }
-    .blue { background-color: blue; }
-  </style>
-</head>
-<body>
+    <div class="yellow box">
+      <p>Multiple menus in initial markup</p>
+      <ne14-menu>
+        <li>Item 1</li>
+        <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
+        <li><a href="https://google.com">Item 3</a></li>
+        <li>Item 4</li>
+      </ne14-menu>
+      <ne14-menu mode="dark">
+        <li class="disabled" aria-keyshortcuts="Alt+C" data-char-left="02bc" data-char-right="313c">
+          My Item 1
+        </li>
+        <li class="split"></li>
+        <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
+        <li>
+          <span>My Item 5</span>
+          <ul>
+            <li aria-keyshortcuts="Test">Edit labels</li>
+          </ul>
+        </li>
+        <li class="split"></li>
+        <li onclick="console.log(444)">
+          <img
+            src="https://cdn3.iconfinder.com/data/icons/summer-beach-4/32/Summer_Icon-12-512.png"
+          />
+          <span>My Item 4</span>
+          <img
+            class="right"
+            src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"
+          />
+        </li>
+        <li class="split"></li>
+        <li>
+          <span>My Item 5</span>
+          <ul>
+            <li>Edit labels</li>
+          </ul>
+        </li>
+        <li class="split"></li>
+      </ne14-menu>
+    </div>
 
-  <div class="red box">
-    <p>Added programatically</p>
-  </div>
+    <div class="green box">
+      <p>Normal (no special menu)</p>
+    </div>
 
-  <div class="yellow box">
-    <p>Multiple menus in initial markup</p>
-    <ne14-menu>
-      <li>Item 1</li>
-      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
-      <li><a href="https://google.com">Item 3</a></li>
-      <li>Item 4</li>
-    </ne14-menu>
-    <ne14-menu mode="dark">
-      <li class="disabled" aria-keyshortcuts="Alt+C" data-char-left="02bc" data-char-right="313c">My Item 1</li>
-      <li class="split"></li>
-      <li><a href="https://bing.com" target="_blank">Bing (New)</a></li>
-      <li>
-        <span>My Item 5</span>
-        <ul>
-          <li aria-keyshortcuts="Test">Edit labels</li>
-        </ul>
-      </li>
-      <li class="split"></li>
-      <li onclick="console.log(444)">
-        <img src="https://cdn3.iconfinder.com/data/icons/summer-beach-4/32/Summer_Icon-12-512.png"/>
-        <span>My Item 4</span>
-        <img class="right" src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"/>
-      </li>
-      <li class="split"></li>
-      <li>
-        <span>My Item 5</span>
-        <ul>
-          <li>Edit labels</li>
-        </ul>
-      </li>
-      <li class="split"></li>
-    </ne14-menu>
-  </div>
-  
-  <div class="green box">
-    <p>Normal (no special menu)</p>
-  </div>
-
-  <div class="blue box">
-    <p>Present in initial markup, with font stuff</p>
-    <ne14-menu style="font-family: 'Courier New', Courier, monospace;">
-      <li>Hello world</li>
-      <li data-char-right="261b">
-        <a href="https://tempuri.com" target="_blank">Click out</a>
-      </li>
-      <li class="split"></li>
-      <li class="disabled">Phone home</li>
-      <li class="split"></li>
-      <li data-char-left="1f648" data-char-right="1f648">Woop!</li>
-    </ne14-menu>
-  </div>
-</body>
+    <div class="blue box">
+      <p>Present in initial markup, with font stuff</p>
+      <ne14-menu style="font-family: 'Courier New', Courier, monospace;">
+        <li>Hello world</li>
+        <li data-char-right="261b">
+          <a href="https://tempuri.com" target="_blank">Click out</a>
+        </li>
+        <li class="split"></li>
+        <li class="disabled">Phone home</li>
+        <li class="split"></li>
+        <li data-char-left="1f648" data-char-right="1f648">Woop!</li>
+      </ne14-menu>
+    </div>
+  </body>
 </html>
