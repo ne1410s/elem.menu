@@ -3,7 +3,7 @@
 ## A lightweight and customisable context menu.
 
 ```html
-<ne14-menu mode="dark">
+<ne14-menu>
   <li>Hello world</li>
   <li class="split"></li>
   <li>
@@ -26,7 +26,6 @@
 - Supports unicode charset (hex) for icons at either side of the item text, and/or `<img>` tags
 - Displays shortcut keys (the implementation of which is left to the author)
 - Inherits the font family and size (size is ~2/3 that of the html root)
-- Offers a "dark mode"
 
 ### How Do I Use It?
 
@@ -55,13 +54,16 @@ NB: To extend this library, or import it in node js, use: _npm i -S @ne1410s/men
 
 ### Attributes
 
-- **mode**: Uses dark mode if 'dark'. Anything else uses normal mode.
+- _There are no bespoke attributes exposed in this element_
 
 ### Events
 
 ```javascript
 const menu = document.querySelector('ne14-menu');
 
+// As mentioned, each item click is propagated on the original element.
+// Instead of (or as well as) dedicated handling, one may also proceed via the
+// following generic selection handler
 menu.addEventListener('itemselect', (event) => {
   console.log('Item Selected!', event);
 });
@@ -79,4 +81,29 @@ menu.addEventListener('itemselect', (event) => {
 
 ### Properties
 
-- `set` **mode** (string): Sets the display mode (either 'dark' or else normal)
+- _There are no bespoke properties exposed in this element_
+
+### CSS Variables
+
+Some degree of custom styling can be optionally provided, by way of css variables:
+
+```css
+/* Example of 'dark mode': */
+ne14-menu {
+  --bg: #333;
+  --border: 1px solid #888;
+  --box-shadow: 2px 2px 3px #333;
+  --hover-item-bg: #666;
+  --fg: #eee;
+  --disabled-fg: #666;
+}
+```
+
+- **`--bg`** _Background for the menu. Defaults to: `#fff`_
+- **`--border`** _Border for the menu. Defaults to: `1px solid #bbb`_
+- **`--box-shadow`** _Box shadow for the menu. Defaults to: `2px 2px 3px #888`_
+- **`--font`** _Font for the menu. Defaults to: `0.65em inherit`_
+- **`--fg`** _Color for menu items. Defaults to: `#000`_
+- **`--disabled-fg`** _Color for disabled menu items. Defaults to: `#bbb`_
+- **`--split-border`** _Border for split lines. Defaults to: `--border` else `1px solid #bbb`_
+- **`--hover-item-bg`** _Background color for items in the hover state. Defaults to: `#bbb`_

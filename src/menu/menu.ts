@@ -1,4 +1,4 @@
-import { q, ChainSource, Chainable } from '@ne1410s/dom';
+import { q, ChainSource } from '@ne1410s/dom';
 import { CustomElementBase } from '@ne1410s/cust-elems';
 
 import markupUrl from './menu.html';
@@ -6,7 +6,6 @@ import stylesUrl from './menu.css';
 import { MenuEventDetail } from '../models';
 
 export class NeMenu extends CustomElementBase {
-  public static readonly observedAttributes = ['mode'];
   private static readonly CHAR_REF_REGEX = /^[0-9a-f]{4,5}$/i;
 
   private readonly top: HTMLUListElement;
@@ -15,22 +14,6 @@ export class NeMenu extends CustomElementBase {
   constructor() {
     super(stylesUrl, markupUrl);
     this.top = this.root.querySelector('ul');
-  }
-
-  get mode(): string {
-    return this.getAttribute('mode');
-  }
-  set mode(value: string) {
-    if (value) this.setAttribute('mode', value);
-    else this.removeAttribute('mode');
-  }
-
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    switch (name) {
-      case 'mode':
-        this.top.classList.toggle('dark', newValue === 'dark');
-        break;
-    }
   }
 
   connectedCallback() {

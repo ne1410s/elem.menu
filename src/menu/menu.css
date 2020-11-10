@@ -14,16 +14,16 @@ ul:not(.top) {
 }
 
 ul {
-  border: 1px solid #ddd;
-  background-color: #fff;
-  box-shadow: 2px 2px 3px #888;
-  transition: background-color 0.6s;
+  border: var(--border, 1px solid #bbb);
+  background: var(--bg, #fff);
+  box-shadow: var(--box-shadow, 2px 2px 3px #888);
+  transition: background 0.6s;
   z-index: 9999999;
 }
 
 .top {
   position: fixed;
-  font-size: 0.65rem;
+  font-size: var(--font-size, 0.65rem);
   user-select: none;
 }
 
@@ -48,10 +48,10 @@ li > p:not(:empty) {
   white-space: nowrap;
 }
 li.disabled {
-  color: #bbb;
+  color: var(--disabled-fg, #bbb);
 }
 li.split {
-  border-top: 1px solid #bbb;
+  border-top: var(--split-border, var(--border, 1px solid #bbb));
   padding: 0;
   margin: 0.3em;
 }
@@ -61,7 +61,7 @@ li.split + li.split {
   display: none;
 }
 li.hover:not(.disabed):not(.split) {
-  background-color: #bbb;
+  background: var(--hover-item-bg, #bbb);
 }
 .top.open li.hover > ul {
   visibility: visible;
@@ -74,7 +74,7 @@ li {
   text-align: left;
   position: relative;
   cursor: default;
-  color: #000;
+  color: var(--fg, #000);
 }
 
 li.group::after {
@@ -95,25 +95,4 @@ ul:not(.top) {
 ul.nestle {
   left: 0.5em;
   top: 100%;
-}
-
-.top.dark li {
-  color: #eee;
-}
-.top.dark li.disabled {
-  color: #666;
-}
-.top.dark li.split {
-  border-top-color: #888;
-  padding: 0;
-  margin: 0.3em;
-}
-.top.dark li.hover:not(.disabed):not(.split) {
-  background-color: #666;
-}
-.top.dark,
-.top.dark ul {
-  background-color: #333;
-  border-color: #888;
-  box-shadow: 2px 2px 3px #333;
 }
