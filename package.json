@@ -40,18 +40,18 @@
   },
   "homepage": "https://github.com/ne1410s/elem.menu#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-commonjs": "^19.0.1",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.2",
     "@rollup/plugin-url": "^6.0.0",
-    "prettier": "^2.3.1",
+    "prettier": "^2.3.2",
     "rimraf": "^3.0.1",
-    "rollup": "^2.52.1",
+    "rollup": "^2.53.2",
     "rollup-plugin-typescript2": "^0.30.0",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@ne1410s/cust-elems": "^0.2.21",
-    "@ne1410s/dom": "^0.2.29"
+    "@ne1410s/cust-elems": "^0.2.22",
+    "@ne1410s/dom": "^0.2.30"
   }
 }
